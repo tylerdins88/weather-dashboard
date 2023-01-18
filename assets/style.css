@@ -1,0 +1,43 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+}
+
+/* background image, sunny, cloudy, rainy, snowy, storms */
+/* change header background based on sunny, cloudy, rainy, snowy, storms */
+
+header {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 3px ridge black;
+}
+
+.sunnyColor {
+    background-image: linear-gradient(to bottom right, red, yellow);
+}
+
+.cloudyColor {
+    background-image: linear-gradient(to bottom right, grey, white);
+}
+
+.rainyColor {
+    background-image: linear-gradient(to bottom right, grey, #AFBECD);
+}
+
+.snowyColor {
+    background-image: linear-gradient(to bottom right, #9FC8F0, white);
+}
+
+.stormColor {
+    background-image: linear-gradient(to bottom right, #616727, #E5F25F);
+}
+
+.btnStyle {
+    margin: 10px;
+    /* need to center this on the left side. columns? */
+}
