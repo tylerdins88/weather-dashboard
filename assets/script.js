@@ -12,8 +12,8 @@ function getWeatherAPI() {
         })
         .then(function (data) {
             console.log(data);
+            weather.textContent = data;
         })
-    weather.textContent = data;
 }
 
 fetchBtn.on("click", getWeatherAPI);
