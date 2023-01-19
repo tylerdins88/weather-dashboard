@@ -37,7 +37,20 @@ header {
     background-image: linear-gradient(to bottom right, #616727, #E5F25F);
 }
 
-.btnStyle {
+.row {
     margin: 10px;
-    /* need to center this on the left side. columns? */
+}
+
+.labelStyle {
+    text-align: center;
+    margin: auto;
+}
+
+#fetchBtn {
+    margin: 10px;
+}
+
+.weatherDisplay {
+    border: 5px solid black;
+    text-align: center;
 }
