@@ -23,16 +23,19 @@
             <button type="submit" class="btn btn-primary" id="fetchBtn">Fetch Weather</button>
         </form>
         <div class="col-10 weatherDisplay">
-            <p id="currentWeather">this is where the current weather will be displayed.
-                I want this to be centered.
-            </p>
+            <p id="currentWeather"></p>
         </div>
     </div>
     <div class="row">
-        <div class="col-2" id="preLocations">Previous Locations:</div>
+        <div class="col-2" id="prevLocations">
+            <ul>Previous Locations:</ul>
+        </div>
         <div class="col-10">This is where the 5 day forecast will be ammended</div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
+
     <script src="./assets/script.js"></script>
 </body>
 

@@ -54,3 +54,9 @@ header {
     border: 5px solid black;
     text-align: center;
 }
+
+li {
+    list-style-type: none;
+    margin: 2px;
+    text-align: center;
+}
