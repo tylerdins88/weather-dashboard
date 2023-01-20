@@ -27,35 +27,35 @@ function getWeatherAPI(event) {
             showCurrentWeather();
         })
 
-    // function listFetch(event) {
-    //     event.preventDefault();
-    //     var listLoc = // need this to be the button value
+    function listFetch(event) {
+        event.preventDefault();
+        var listLoc = event.target.id
+        console.log(listLoc)
 
-    //     var listAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
+        var listAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
 
-    //     fetch(listAPI)
-    //         .then(function (response) {
-    //             return response.json();
-    //         })
-    //         .then(function (data) {
-    //             console.log(data);
-    //             weatherData = data;
-    //             showCurrentWeather()
-    //         })
-    // }
+        fetch(listAPI)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data);
+                weatherData = data;
+                showCurrentWeather()
+            })
+    }
 
     function addLoc() {
         enteredLoc = weatherData.city.name;
         console.log(enteredLoc);
         var lastListed = document.createElement("li");
-        var lastLocation = document.createElement("input");
-        lastLocation.setAttribute("type", "submit");
+        var lastLocation = document.createElement("button");
+        lastLocation.innerHTML = enteredLoc;
         lastLocation.setAttribute("class", "btn btn-primary");
-        lastLocation.setAttribute("value", enteredLoc);
-        lastLocation.addEventListener("click", getWeatherAPI)
+        lastLocation.setAttribute("id", weatherLoc);
+        lastLocation.addEventListener("click", listFetch)
         lastListed.append(lastLocation);
         prevLocations.append(lastListed);
-        // i need to make this button link back to the listed api
     }
 
     function showCurrentWeather() {
