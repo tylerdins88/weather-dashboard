@@ -1,16 +1,19 @@
 var currentWeather = $("#currentWeather");
+var futureWeather = $("#futureWeather");
+var fiveDay = $("#fiveDay")
 var fetchBtn = $("#fetchBtn");
 var prevLocations = $("#prevLocations")
 var enteredLoc = "";
 var listMain = "";
 var weatherData;
+var weatherLoc = "";
 // current format of timeNow is in milliseconds since epoch
 var timeNow = dayjs().unix();
 // var iconUrl = `https://openweathermap.org/img/w/${** your - data - ojb **.icon}.png`;
 
 function getWeatherAPI(event) {
     event.preventDefault();
-    var weatherLoc = $("#weatherLoc").val();
+    weatherLoc = $("#weatherLoc").val();
     console.log(weatherLoc);
     // var weatherAPI = "http://api.openweathermap.org/data/2.5/forecast?q=" + weatherLoc + "&appid=c3f6b2733fb2d47bd01e52a022b99a72"
     var weatherAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + weatherLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
@@ -41,7 +44,7 @@ function getWeatherAPI(event) {
             .then(function (data) {
                 console.log(data);
                 weatherData = data;
-                showCurrentWeather()
+                showCurrentWeather();
             })
     }
 
@@ -59,23 +62,53 @@ function getWeatherAPI(event) {
     }
 
     function showCurrentWeather() {
-        // i need to find the date, tempature, wind, humidity for 
         enteredLoc = weatherData.city.name;
-        var currentTemp = weatherData.list[0].main.temp + " Degrees F";
-        var currentSky = weatherData.list[0].weather[0].description;
-        var currentWind = weatherData.list[0].wind.speed + " MPH";
-        var currentHumidity = weatherData.list[0].main.humidity + " Percent";
-        console.log(enteredLoc, currentTemp, currentSky, currentWind, currentHumidity);
+        console.log(enteredLoc, weatherData.list[0].main.temp, weatherData.list[0].weather[0].description, weatherData.list[0].wind.speed, weatherData.list[0].main.humidity);
         currentWeather.text("The current weather for " + enteredLoc + " at " + dayjs().format("dddd, MMMM D, YYYY") + " is as follows:");
-        currentWeather.append(currentTemp);
-        currentWeather.append(currentSky);
-        currentWeather.append(currentWind);
-        currentWeather.append(currentHumidity);
+        $("#currentStats").addClass("currentData")
+        $("#currentIcon").val("https://openweathermap.org/img/w/$weatherData.icon.png");
+        $("#currentTemp").text(weatherData.list[0].main.temp + " Degrees F");
+        $("#currentSky").text(weatherData.list[0].weather[0].description);
+        $("#currentWind").text(weatherData.list[0].wind.speed + " MPH");
+        $("#currentHumidity").text(weatherData.list[0].main.humidity + " Percent");
+        showFutureWeather();
+    }
 
+    function showFutureWeather() {
+        var index = 7;
+        for (i = 0; i < 5; i++) {
+            console.log(enteredLoc, weatherData.list[index].main.temp, weatherData.list[index].weather[0].description, weatherData.list[index].wind.speed, weatherData.list[index].main.humidity);
+            futureWeather.text("The 5 day forecast for " + enteredLoc + " is as follows:");
+            var nextDay = document.createElement("li");
+            var futureTemp = document.createElement("p");
+            futureTemp.textContent = (weatherData.list[index].main.temp + " Degrees F");
+            nextDay.append(futureTemp);
+            var futureSky = document.createElement("p");
+            futureSky.textContent = (weatherData.list[index].weather[0].description);
+            nextDay.append(futureSky);
+            var futureWind = document.createElement("p");
+            futureWind.textContent = (weatherData.list[index].wind.speed + " MPH");
+            nextDay.append(futureWind);
+            var futureHumidity = document.createElement("p");
+            futureHumidity.textContent = (weatherData.list[index].main.humidity + " Percent")
+            nextDay.append(futureHumidity);
+            fiveDay.append(nextDay)
+            index += 8;
+        }
     }
 }
 
 fetchBtn.on("click", getWeatherAPI);
+
+// function checkValue(event) {
+//     weatherLoc = $("#weatherLoc").val();
+//     event.preventDefault
+//     if (weatherLoc > 99950 || weatherLoc < 0) {
+//         alert("Please enter a valid Zip Code.")
+//     } else {
+//         getWeatherAPI();
+//     }
+// }
 
 // need to link dayJS
 
