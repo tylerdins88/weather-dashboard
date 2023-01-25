@@ -9,7 +9,6 @@ var weatherData;
 var weatherLoc = "";
 // current format of timeNow is in milliseconds since epoch
 var timeNow = dayjs().unix();
-// var iconUrl = `https://openweathermap.org/img/w/${** your - data - ojb **.icon}.png`;
 
 function getWeatherAPI(event) {
     event.preventDefault();
@@ -27,6 +26,7 @@ function getWeatherAPI(event) {
             console.log(data);
             weatherData = data;
             addLoc();
+            fiveDay.textContent = "";
             showCurrentWeather();
         })
 
@@ -44,6 +44,7 @@ function getWeatherAPI(event) {
             .then(function (data) {
                 console.log(data);
                 weatherData = data;
+                fiveDay.textContent = "";
                 showCurrentWeather();
             })
     }
@@ -59,18 +60,30 @@ function getWeatherAPI(event) {
         lastLocation.addEventListener("click", listFetch)
         lastListed.append(lastLocation);
         prevLocations.append(lastListed);
+        // need to clear the future weather before appending more
     }
+
+    // I tried to define skyConditions as undefined globally. then reassign it inside the fetches.
+    // then calling it inside the fetches. charAt undefined? 
+    // var skyConditions = weatherData.list[0].weather[0].description;
+    // var capitalSky;
+    // function upperCaseSky(skyConditions) {
+    //     capitalSky = skyConditions.charAt(0).toUpperCase() + skyConditions.slice(1)
+    // }
+    // upperCaseSky();
 
     function showCurrentWeather() {
         enteredLoc = weatherData.city.name;
         console.log(enteredLoc, weatherData.list[0].main.temp, weatherData.list[0].weather[0].description, weatherData.list[0].wind.speed, weatherData.list[0].main.humidity);
         currentWeather.text("The current weather for " + enteredLoc + " at " + dayjs().format("dddd, MMMM D, YYYY") + " is as follows:");
+        var showIcon = ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png");
         $("#currentStats").addClass("currentData")
-        $("#currentIcon").val("https://openweathermap.org/img/w/$weatherData.icon.png");
-        $("#currentTemp").text(weatherData.list[0].main.temp + " Degrees F");
-        $("#currentSky").text(weatherData.list[0].weather[0].description);
-        $("#currentWind").text(weatherData.list[0].wind.speed + " MPH");
-        $("#currentHumidity").text(weatherData.list[0].main.humidity + " Percent");
+        $("#currentTemp").text("Temp: " + weatherData.list[0].main.temp + "° F");
+        $("#currentIcon").attr("src", showIcon)
+        $("#currentSky").text("Sky: " + weatherData.list[0].weather[0].description);
+        $("#currentWind").text("Wind: " + weatherData.list[0].wind.speed + " MPH");
+        $("#currentHumidity").text("Humidity: " + weatherData.list[0].main.humidity + " %");
+        // need to clear the future weather before appending more
         showFutureWeather();
     }
 
@@ -79,20 +92,24 @@ function getWeatherAPI(event) {
         for (i = 0; i < 5; i++) {
             console.log(enteredLoc, weatherData.list[index].main.temp, weatherData.list[index].weather[0].description, weatherData.list[index].wind.speed, weatherData.list[index].main.humidity);
             futureWeather.text("The 5 day forecast for " + enteredLoc + " is as follows:");
-            var nextDay = document.createElement("li");
+            var nextDay = document.createElement("div");
             var futureTemp = document.createElement("p");
-            futureTemp.textContent = (weatherData.list[index].main.temp + " Degrees F");
-            nextDay.append(futureTemp);
+            futureTemp.textContent = ("Temp: " + weatherData.list[index].main.temp + "° F");
+            nextDay.appendChild(futureTemp);
+            var futureIcon = document.createElement("img")
+            futureIcon.setAttribute("src", ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png"));
+            nextDay.appendChild(futureIcon)
             var futureSky = document.createElement("p");
-            futureSky.textContent = (weatherData.list[index].weather[0].description);
+            futureSky.textContent = ("Sky: " + weatherData.list[index].weather[0].description);
             nextDay.append(futureSky);
             var futureWind = document.createElement("p");
-            futureWind.textContent = (weatherData.list[index].wind.speed + " MPH");
+            futureWind.textContent = ("Wind: " + weatherData.list[index].wind.speed + " MPH");
             nextDay.append(futureWind);
             var futureHumidity = document.createElement("p");
-            futureHumidity.textContent = (weatherData.list[index].main.humidity + " Percent")
+            futureHumidity.textContent = ("Humidity: " + weatherData.list[index].main.humidity + " %")
             nextDay.append(futureHumidity);
             fiveDay.append(nextDay)
+            $("#fiveDay" + i)
             index += 8;
         }
     }

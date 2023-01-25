@@ -15,32 +15,33 @@
 
 <body>
     <div class="row">
-        <form class="col-2">
-            <div class="form-group">
-                <label for="locationEntry" class="labelStyle">Please enter a Zip Code:</label>
-                <input type="text" class="form-control" id="weatherLoc" placeholder="Zip Code:">
+        <div class="col-2">
+            <form>
+                <div class="form-group">
+                    <div for="locationEntry" class="labelStyle">Please enter a Zip Code:</div>
+                    <input type="text" class="form-control" id="weatherLoc" placeholder="Zip Code:">
+                </div>
+                <button type="submit" class="btn btn-primary" id="fetchBtn">Fetch Weather</button>
+            </form>
+            <div id="prevLocations">
+                <p class="prevLoc">Previous Locations:</p>
+                <ul id="listedLocations"></ul>
             </div>
-            <button type="submit" class="btn btn-primary" id="fetchBtn">Fetch Weather</button>
-        </form>
+        </div>
         <div class="col-10 weatherDisplay">
-            <h3 id="currentWeather"></h3>
-            <ul id="currentStats">
-                <li id="currentIcon"></li>
-                <li id="currentTemp"></li>
-                <li id="currentSky"></li>
-                <li id="currentWind"></li>
-                <li id="currentHumidity"></li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <!-- <div class="col-2"></div> -->
-        <div class="col-2" id="prevLocations">
-            <ul>Previous Locations:</ul>
-        </div>
-        <div class="col-10">
+            <div>
+                <h3 id="currentWeather"></h3>
+                <ul id="currentStats">
+                    <li id="currentTemp"></li>
+                    <img id="currentIcon" src=""></img>
+                    <li id="currentSky"></li>
+                    <li id="currentWind"></li>
+                    <li id="currentHumidity"></li>
+                </ul>
+            </div>
             <h3 id="futureWeather"></h3>
-            <ul id="fiveDay"></ul>
+            <!-- tried doing a list as well as divs + more -->
+            <div class="row" id="fiveDay"></div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
