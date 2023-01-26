@@ -13,7 +13,7 @@ function getWeatherAPI(event) {
 
     weatherLoc = $("#weatherLoc").val();
     console.log(weatherLoc);
-    var weatherAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + weatherLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
+    var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?zip=" + weatherLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
 
     fetch(weatherAPI)
         .then(function (response) {
@@ -56,8 +56,6 @@ function showFutureWeather() {
 
     document.getElementById("fiveDay").innerHTML = "";
     var index = 7;
-    var timeNow = dayjs().unix();
-    // var futureDate = dayjs().add(dayjs.duration({ 'days': 1 }));
 
     for (i = 0; i < 5; i++) {
         var skyConditions = weatherData.list[index].weather[0].description.split(" ");
@@ -66,11 +64,6 @@ function showFutureWeather() {
             return capitalSky = skyConditions[0].charAt(0).toUpperCase() + skyConditions[0].slice(1) + " " + skyConditions[1].charAt(0).toUpperCase() + skyConditions[1].slice(1)
         }
 
-        console.log(futureDate);
-
-        timeNow += 86400;
-        console.log(timeNow);
-
         console.log(enteredLoc, weatherData.list[index].main.temp, weatherData.list[index].weather[0].description, weatherData.list[index].wind.speed, weatherData.list[index].main.humidity);
         futureWeather.text("The 5 day forecast for " + enteredLoc + " is as follows:");
 
@@ -78,8 +71,9 @@ function showFutureWeather() {
         nextDay.classList.add("col")
         nextDay.classList.add("future")
 
+        var futureTime = dayjs().add(i + 1, "day").format("dddd, MMMM D")
         var futureDate = document.createElement("p");
-        futureDate.textContent = (dayjs().format("dddd, MMMM D"))
+        futureDate.textContent = (futureTime)
         nextDay.appendChild(futureDate);
 
         var futureTemp = document.createElement("p");

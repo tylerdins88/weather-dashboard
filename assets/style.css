@@ -54,6 +54,7 @@ header {
 }
 
 .future {
+    text-align: center;
     border: 2px dotted black;
     background-color: lightblue;
 }
