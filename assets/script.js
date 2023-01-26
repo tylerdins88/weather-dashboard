@@ -33,7 +33,7 @@ fetchBtn.on("click", getWeatherAPI);
 
 function showCurrentWeather() {
     enteredLoc = weatherData.city.name;
-    var showIcon = ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png");
+    var showIcon = ("https://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png");
     var skyConditions = weatherData.list[0].weather[0].description.split(" ");
     var capitalSky;
     function upperCaseSky() {
@@ -81,7 +81,7 @@ function showFutureWeather() {
         nextDay.appendChild(futureTemp);
 
         var futureIcon = document.createElement("img")
-        futureIcon.setAttribute("src", ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png"));
+        futureIcon.setAttribute("src", ("https://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png"));
         nextDay.appendChild(futureIcon)
 
         var futureSky = document.createElement("p");
@@ -120,7 +120,7 @@ function listFetch(event) {
 
     var listLoc = event.target.id
     console.log(listLoc)
-    var listAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
+    var listAPI = "https://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
 
     fetch(listAPI)
         .then(function (response) {
