@@ -7,8 +7,6 @@ var enteredLoc = "";
 var listMain = "";
 var weatherData;
 var weatherLoc = "";
-// current format of timeNow is in milliseconds since epoch
-var timeNow = dayjs().unix();
 
 function getWeatherAPI(event) {
     event.preventDefault();
@@ -24,110 +22,119 @@ function getWeatherAPI(event) {
         .then(function (data) {
             console.log(data);
             weatherData = data;
-            addLoc();
+            document.getElementById("weatherLoc").innerHTML = "Zip Code:"
             showCurrentWeather();
+            addLoc();
         })
+}
 
-    function listFetch(event) {
-        event.preventDefault();
 
-        var listLoc = event.target.id
-        console.log(listLoc)
-        var listAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
+fetchBtn.on("click", getWeatherAPI);
 
-        fetch(listAPI)
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (data) {
-                console.log(data);
-                weatherData = data;
-                showCurrentWeather();
-            })
+function showCurrentWeather() {
+    enteredLoc = weatherData.city.name;
+    var showIcon = ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png");
+    var skyConditions = weatherData.list[0].weather[0].description.split(" ");
+    var capitalSky;
+    function upperCaseSky() {
+        return capitalSky = skyConditions[0].charAt(0).toUpperCase() + skyConditions[0].slice(1) + " " + skyConditions[1].charAt(0).toUpperCase() + skyConditions[1].slice(1)
     }
 
-    function addLoc() {
-        enteredLoc = weatherData.city.name;
-        console.log(enteredLoc);
+    console.log(enteredLoc, weatherData.list[0].main.temp, weatherData.list[0].weather[0].description, weatherData.list[0].wind.speed, weatherData.list[0].main.humidity);
+    currentWeather.text("The current weather for " + enteredLoc + " at " + dayjs().format("dddd, MMMM D, YYYY") + " is as follows:");
 
-        var lastListed = document.createElement("li");
-        var lastLocation = document.createElement("button");
-        lastLocation.innerHTML = enteredLoc;
-        lastLocation.setAttribute("class", "btn btn-primary");
-        lastLocation.setAttribute("id", weatherLoc);
-        lastLocation.addEventListener("click", listFetch)
-        lastListed.append(lastLocation);
-        prevLocations.append(lastListed);
-    }
+    $("#currentStats").addClass("currentData")
+    $("#currentTemp").text("Temp: " + weatherData.list[0].main.temp + "° F");
+    $("#currentIcon").attr("src", showIcon)
+    $("#currentSky").text("Sky: " + upperCaseSky());
+    $("#currentWind").text("Wind: " + weatherData.list[0].wind.speed + " MPH");
+    $("#currentHumidity").text("Humidity: " + weatherData.list[0].main.humidity + " %");
+    showFutureWeather();
+}
 
-    function showCurrentWeather() {
-        enteredLoc = weatherData.city.name;
-        var showIcon = ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png");
-        var skyConditions = weatherData.list[0].weather[0].description.split(" ");
+function showFutureWeather() {
+
+    document.getElementById("fiveDay").innerHTML = "";
+    var index = 7;
+    var timeNow = dayjs().unix();
+    // var futureDate = dayjs().add(dayjs.duration({ 'days': 1 }));
+
+    for (i = 0; i < 5; i++) {
+        var skyConditions = weatherData.list[index].weather[0].description.split(" ");
         var capitalSky;
         function upperCaseSky() {
             return capitalSky = skyConditions[0].charAt(0).toUpperCase() + skyConditions[0].slice(1) + " " + skyConditions[1].charAt(0).toUpperCase() + skyConditions[1].slice(1)
         }
 
-        console.log(enteredLoc, weatherData.list[0].main.temp, weatherData.list[0].weather[0].description, weatherData.list[0].wind.speed, weatherData.list[0].main.humidity);
-        currentWeather.text("The current weather for " + enteredLoc + " at " + dayjs().format("dddd, MMMM D, YYYY") + " is as follows:");
+        console.log(futureDate);
 
-        $("#currentStats").addClass("currentData")
-        $("#currentTemp").text("Temp: " + weatherData.list[0].main.temp + "° F");
-        $("#currentIcon").attr("src", showIcon)
-        $("#currentSky").text("Sky: " + upperCaseSky());
-        $("#currentWind").text("Wind: " + weatherData.list[0].wind.speed + " MPH");
-        $("#currentHumidity").text("Humidity: " + weatherData.list[0].main.humidity + " %");
-        showFutureWeather();
-    }
+        timeNow += 86400;
+        console.log(timeNow);
 
-    function showFutureWeather() {
+        console.log(enteredLoc, weatherData.list[index].main.temp, weatherData.list[index].weather[0].description, weatherData.list[index].wind.speed, weatherData.list[index].main.humidity);
+        futureWeather.text("The 5 day forecast for " + enteredLoc + " is as follows:");
 
-        var index = 7;
-        document.getElementById("fiveDay").innerHTML = "";
+        var nextDay = document.createElement("div");
+        nextDay.classList.add("col")
+        nextDay.classList.add("future")
 
-        for (i = 0; i < 5; i++) {
-            var skyConditions = weatherData.list[index].weather[0].description.split(" ");
-            var capitalSky;
-            function upperCaseSky() {
-                return capitalSky = skyConditions[0].charAt(0).toUpperCase() + skyConditions[0].slice(1) + " " + skyConditions[1].charAt(0).toUpperCase() + skyConditions[1].slice(1)
-            }
+        var futureDate = document.createElement("p");
+        futureDate.textContent = (dayjs().format("dddd, MMMM D"))
+        nextDay.appendChild(futureDate);
 
-            console.log(enteredLoc, weatherData.list[index].main.temp, weatherData.list[index].weather[0].description, weatherData.list[index].wind.speed, weatherData.list[index].main.humidity);
-            futureWeather.text("The 5 day forecast for " + enteredLoc + " is as follows:");
+        var futureTemp = document.createElement("p");
+        futureTemp.textContent = ("Temp: " + weatherData.list[index].main.temp + "° F");
+        nextDay.appendChild(futureTemp);
 
-            var nextDay = document.createElement("div");
-            nextDay.classList.add("col")
-            nextDay.classList.add("future")
+        var futureIcon = document.createElement("img")
+        futureIcon.setAttribute("src", ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png"));
+        nextDay.appendChild(futureIcon)
 
-            var futureDate = document.createElement("p");
-            futureDate.textContent = (dayjs().format("dddd, MMMM D"))
-            nextDay.appendChild(futureDate);
+        var futureSky = document.createElement("p");
+        futureSky.textContent = ("Sky: " + upperCaseSky());
+        nextDay.append(futureSky);
 
-            var futureTemp = document.createElement("p");
-            futureTemp.textContent = ("Temp: " + weatherData.list[index].main.temp + "° F");
-            nextDay.appendChild(futureTemp);
+        var futureWind = document.createElement("p");
+        futureWind.textContent = ("Wind: " + weatherData.list[index].wind.speed + " MPH");
+        nextDay.append(futureWind);
 
-            var futureIcon = document.createElement("img")
-            futureIcon.setAttribute("src", ("http://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png"));
-            nextDay.appendChild(futureIcon)
+        var futureHumidity = document.createElement("p");
+        futureHumidity.textContent = ("Humidity: " + weatherData.list[index].main.humidity + " %")
+        nextDay.append(futureHumidity);
 
-            var futureSky = document.createElement("p");
-            futureSky.textContent = ("Sky: " + upperCaseSky());
-            nextDay.append(futureSky);
-
-            var futureWind = document.createElement("p");
-            futureWind.textContent = ("Wind: " + weatherData.list[index].wind.speed + " MPH");
-            nextDay.append(futureWind);
-
-            var futureHumidity = document.createElement("p");
-            futureHumidity.textContent = ("Humidity: " + weatherData.list[index].main.humidity + " %")
-            nextDay.append(futureHumidity);
-
-            fiveDay.append(nextDay)
-            index += 8;
-        }
+        fiveDay.append(nextDay)
+        index += 8;
     }
 }
 
-fetchBtn.on("click", getWeatherAPI);
+function addLoc() {
+    enteredLoc = weatherData.city.name;
+    console.log(enteredLoc);
+
+    var lastListed = document.createElement("li");
+    var lastLocation = document.createElement("button");
+    lastLocation.innerHTML = enteredLoc;
+    lastLocation.setAttribute("class", "btn btn-primary");
+    lastLocation.setAttribute("id", weatherLoc);
+    lastLocation.addEventListener("click", listFetch)
+    lastListed.append(lastLocation);
+    prevLocations.append(lastListed);
+}
+
+function listFetch(event) {
+    event.preventDefault();
+
+    var listLoc = event.target.id
+    console.log(listLoc)
+    var listAPI = "http://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
+
+    fetch(listAPI)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+            weatherData = data;
+            showCurrentWeather();
+        })
+}
