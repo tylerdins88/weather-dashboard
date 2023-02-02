@@ -30,20 +30,19 @@ function retrieveData(weatherLoc) {
         })
         .then(function (data) {
             console.log(data);
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].country === "US") {
-                    lat = data[i].lat;
-                    lon = data[i].lon;
-                    getWeatherAPI();
-                    if (storedLoc.includes(weatherLoc) || ($("#weatherLoc").val() === "")) {
-                        return;
-                    } else {
-                        storedLoc.push(weatherLoc);
-                        localStorage.setItem("locWanted", JSON.stringify(storedLoc));
-                    }
-                    return;
-                }
+            console.log(weatherLoc)
+            lat = data[0].lat;
+            lon = data[0].lon;
+            getWeatherAPI();
+            if (storedLoc.includes(weatherLoc) || ($("#weatherLoc").val() === "")) {
+                return;
+            } else {
+                storedLoc.push(weatherLoc);
+                localStorage.setItem("locWanted", JSON.stringify(storedLoc));
             }
+            return;
+
+
         })
 }
 
@@ -166,7 +165,12 @@ function showPreviousLoc() {
         for (var i = 0; i < storedLoc.length; i++) {
             var lastListed = document.createElement("li");
             var lastLocation = document.createElement("button");
-            lastLocation.innerHTML = storedLoc[i];
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            lastLocation.innerHTML = capitalizeFirstLetter(storedLoc[i]);
             lastLocation.setAttribute("class", "btn btn-primary");
             lastLocation.addEventListener("click", grabStorage)
             lastListed.append(lastLocation);
