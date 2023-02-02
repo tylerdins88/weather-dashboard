@@ -7,13 +7,49 @@ var enteredLoc = "";
 var listMain = "";
 var weatherData;
 var weatherLoc = "";
+var lat = "";
+var lon = "";
+var cityState = "";
+var storedLoc = JSON.parse(localStorage.getItem("locWanted")) || [];
 
-function getWeatherAPI(event) {
+function getLatLon(event) {
     event.preventDefault();
 
     weatherLoc = $("#weatherLoc").val();
-    console.log(weatherLoc);
-    var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?zip=" + weatherLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
+    console.log(weatherLoc)
+    retrieveData(weatherLoc);
+}
+
+function retrieveData(weatherLoc) {
+
+    var nameAPI = "https://api.openweathermap.org/geo/1.0/direct?q=" + weatherLoc + "&limit=5&appid=e655f88c2e522bfcf96e8b9280a63f61"
+
+    fetch(nameAPI)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].country === "US") {
+                    lat = data[i].lat;
+                    lon = data[i].lon;
+                    getWeatherAPI();
+                    if (storedLoc.includes(weatherLoc) || ($("#weatherLoc").val() === "")) {
+                        return;
+                    } else {
+                        storedLoc.push(weatherLoc);
+                        localStorage.setItem("locWanted", JSON.stringify(storedLoc));
+                    }
+                    return;
+                }
+            }
+        })
+}
+
+function getWeatherAPI() {
+
+    var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
 
     fetch(weatherAPI)
         .then(function (response) {
@@ -22,14 +58,13 @@ function getWeatherAPI(event) {
         .then(function (data) {
             console.log(data);
             weatherData = data;
-            document.getElementById("weatherLoc").innerHTML = "Zip Code:"
             showCurrentWeather();
             addLoc();
         })
 }
 
 
-fetchBtn.on("click", getWeatherAPI);
+fetchBtn.on("click", getLatLon);
 
 function showCurrentWeather() {
     enteredLoc = weatherData.city.name;
@@ -84,9 +119,9 @@ function showFutureWeather() {
         futureIcon.setAttribute("src", ("https://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png"));
         nextDay.appendChild(futureIcon)
 
-        var futureSky = document.createElement("p");
-        futureSky.textContent = ("Sky: " + upperCaseSky());
-        nextDay.append(futureSky);
+        // var futureSky = document.createElement("p");
+        // futureSky.textContent = ("Sky: " + upperCaseSky());
+        // nextDay.append(futureSky);
 
         var futureWind = document.createElement("p");
         futureWind.textContent = ("Wind: " + weatherData.list[index].wind.speed + " MPH");
@@ -102,33 +137,43 @@ function showFutureWeather() {
 }
 
 function addLoc() {
-    enteredLoc = weatherData.city.name;
-    console.log(enteredLoc);
+    // enteredLoc = weatherData.city.name;
+    // console.log(enteredLoc);
 
-    var lastListed = document.createElement("li");
-    var lastLocation = document.createElement("button");
-    lastLocation.innerHTML = enteredLoc;
-    lastLocation.setAttribute("class", "btn btn-primary");
-    lastLocation.setAttribute("id", weatherLoc);
-    lastLocation.addEventListener("click", listFetch)
-    lastListed.append(lastLocation);
-    prevLocations.append(lastListed);
+    if (storedLoc.includes(enteredLoc)) {
+        console.log("yes")
+        return;
+    } else {
+        console.log("no")
+        var lastListed = document.createElement("li");
+        var lastLocation = document.createElement("button");
+        lastLocation.innerHTML = enteredLoc;
+        lastLocation.setAttribute("class", "btn btn-primary");
+        lastLocation.addEventListener("click", grabStorage)
+        lastListed.append(lastLocation);
+        prevLocations.append(lastListed);
+    }
 }
 
-function listFetch(event) {
-    event.preventDefault();
-
-    var listLoc = event.target.id
-    console.log(listLoc)
-    var listAPI = "https://api.openweathermap.org/data/2.5/forecast?zip=" + listLoc + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
-
-    fetch(listAPI)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            console.log(data);
-            weatherData = data;
-            showCurrentWeather();
-        })
+function grabStorage(event) {
+    var keyWanted = event.target.textContent
+    console.log(keyWanted)
+    retrieveData(keyWanted);
 }
+
+function showPreviousLoc() {
+    if (storedLoc) {
+        for (var i = 0; i < storedLoc.length; i++) {
+            var lastListed = document.createElement("li");
+            var lastLocation = document.createElement("button");
+            lastLocation.innerHTML = storedLoc[i];
+            lastLocation.setAttribute("class", "btn btn-primary");
+            lastLocation.addEventListener("click", grabStorage)
+            lastListed.append(lastLocation);
+            prevLocations.append(lastListed);
+        }
+    }
+}
+
+showPreviousLoc();
+
