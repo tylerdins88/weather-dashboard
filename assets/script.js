@@ -1,3 +1,4 @@
+// These are my global variables
 var currentWeather = $("#currentWeather");
 var futureWeather = $("#futureWeather");
 var fiveDay = $("#fiveDay")
@@ -11,6 +12,7 @@ var lat = "";
 var lon = "";
 var storedLoc = JSON.parse(localStorage.getItem("locWanted")) || [];
 
+// This is the first function that runs when you fetch the weather. 
 function getLatLon(event) {
     event.preventDefault();
 
@@ -19,6 +21,7 @@ function getLatLon(event) {
     retrieveData(weatherLoc);
 }
 
+// This calls the api using the inputed city
 function retrieveData(weatherLoc) {
 
     var nameAPI = "https://api.openweathermap.org/geo/1.0/direct?q=" + weatherLoc + "&limit=5&appid=e655f88c2e522bfcf96e8b9280a63f61"
@@ -32,10 +35,12 @@ function retrieveData(weatherLoc) {
             console.log(weatherLoc)
             lat = data[0].lat;
             lon = data[0].lon;
+            // This runs the api for the 5 day forecast
             getWeatherAPI();
             if (storedLoc.includes(weatherLoc) || ($("#weatherLoc").val() === "")) {
                 return;
             } else {
+                // Here is where i am storing my entered city in localstorage with a capital
                 function capitalizeFirstLetter(string) {
                     return string.charAt(0).toUpperCase() + string.slice(1);
                 }
@@ -46,6 +51,7 @@ function retrieveData(weatherLoc) {
         })
 }
 
+// The api used to get my extended forecast
 function getWeatherAPI() {
 
     var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=e655f88c2e522bfcf96e8b9280a63f61"
@@ -61,14 +67,12 @@ function getWeatherAPI() {
         })
 }
 
-
-fetchBtn.on("click", getLatLon);
-
+// Displays the information for the current weather
 function showCurrentWeather() {
     enteredLoc = weatherData.city.name;
     var showIcon = ("https://openweathermap.org/img/wn/" + weatherData.list[0].weather[0].icon + "@2x.png");
 
-    console.log(enteredLoc, weatherData.list[0].main.temp, weatherData.list[0].weather[0].description, weatherData.list[0].wind.speed, weatherData.list[0].main.humidity);
+    console.log(enteredLoc, weatherData.list[0].main.temp, weatherData.list[0].wind.speed, weatherData.list[0].main.humidity);
     currentWeather.text("The current weather for " + enteredLoc + " at " + dayjs().format("dddd, MMMM D, YYYY") + " is as follows:");
 
     $("#currentStats").addClass("currentData")
@@ -79,6 +83,7 @@ function showCurrentWeather() {
     showFutureWeather();
 }
 
+// Displays the 5 day extend forecast
 function showFutureWeather() {
 
     document.getElementById("fiveDay").innerHTML = "";
@@ -119,6 +124,7 @@ function showFutureWeather() {
     }
 }
 
+// Adds the city to a list to search
 function addLoc() {
     var lastListed = document.createElement("li");
     var lastLocation = document.createElement("button");
@@ -134,12 +140,14 @@ function addLoc() {
 
 }
 
+// function to grab item from local storage
 function grabStorage(event) {
     var keyWanted = event.target.textContent
     console.log(keyWanted)
     retrieveData(keyWanted);
 }
 
+// uses local storage to display the list
 function showPreviousLoc() {
     for (var i = 0; i < storedLoc.length; i++) {
         var lastListed = document.createElement("li");
@@ -156,3 +164,4 @@ function showPreviousLoc() {
 
 showPreviousLoc();
 
+fetchBtn.on("click", getLatLon);
